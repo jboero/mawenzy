@@ -1,0 +1,22 @@
+#!/usr/bin/mawsh
+
+void kernel main_000_128_128(
+	global		mawproc	*p,
+	constant	uchar	*bits,
+	global		int	*ix)
+{
+	int g0	 = get_global_id(0);
+	int g1	 = get_global_id(1);
+	int look = g0 + g1 + 1;
+//	uchar a	 = bits[g0];
+//	uchar b	 = bits[look];
+
+//	if (a == b)
+//		printf("[%d,%d](%c,%c)\n", g0, look, a, b);
+
+	constant ulong *a = (constant uint*)(bits + g0),
+		*b = (constant uint*)(bits + look);
+
+	if (*a == *b)
+		printf("[%d,%d](%s,%s)\n", g0, g1, bits[g0], bits[look]);
+}

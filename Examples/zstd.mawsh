@@ -1,0 +1,32 @@
+#!/usr/bin/mawsh
+#include <mawsh.cl>
+
+typedef struct
+{
+	short matches[200];
+	int ix;
+} match;
+
+void kernel init(global mawproc *p, global match *m)
+{
+	m->ix = 0;
+}
+
+void kernel vectoradd_4096(global mawproc* p,
+        constant char *a, constant char *b, global match *m)
+{
+	if (a[G0] == b[G0])
+		m->matches[atomic_inc(&m->ix)] = G0;
+}
+
+void kernel report(global mawproc *p, constant match *m)
+{
+	printmc(&p->out, "Matches found: ");
+	printmi(&p->out, m->ix);
+	printmc(&p->out, "\n");
+	for (int i = 0; i < m->ix; ++i)
+	{
+		printmi(&p->out, m->matches[i]);
+		printmc(&p->out, "\n");
+	}
+}

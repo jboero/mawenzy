@@ -1,0 +1,51 @@
+#!/usr/bin/mawsh
+// John Boero
+#define TIFFW    1024
+#define TIFFH    768
+
+#include <mawsh.cl>
+#include <tiff.cl>
+
+// Scaling functions
+float mapX(float x)
+{
+  return x*3.25 - 2;
+}
+
+float mapY(float y)
+{
+  return y*2.5 - 1.25;
+}
+
+void kernel setup(global tiffFile *tif)
+{
+	initTIFF(tif);
+}
+
+void kernel mandelbrot_1024x768(global tiffFile *tif)
+{
+  float x_origin = mapX((float) G0 / GSIZE0);
+  float y_origin = mapY((float) G1 / GSIZE1);
+
+  // The Escape time algorithm, it follows the pseduocode from Wikipedia
+  // _very_ closely
+  float x = 0.0;
+  float y = 0.0;
+  int iteration = 0;
+
+  // This can be changed, to be more or less precise
+  int max_iteration = 256;
+
+  while(x*x + y*y <= 4 && iteration < max_iteration)
+  {
+    float xtemp = x*x - y*y + x_origin;
+    y = 2*x*y + y_origin;
+    x = xtemp;
+    iteration++;
+  }
+
+  if (iteration == max_iteration)
+    tif->argb[G0][G1] = (uchar4)(0, 0, 0, 0xFF);
+  else
+	tif->argb[G0][G1] = (uchar4)(iteration, iteration, iteration, 0xFF);
+}

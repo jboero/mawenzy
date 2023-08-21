@@ -1,0 +1,10 @@
+#!/usr/bin/mawsh
+#include <mawsh.cl>
+
+// SAXPY basic 1024x1024. 16M buffers required
+void kernel saxpy_1024x1024(global mawproc* p,
+	float a, global float *x, global float *y)
+{
+	int i = (G0 * G1) + G1;
+	y[i] = a*x[i] + y[i];
+}

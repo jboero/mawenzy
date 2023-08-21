@@ -1,0 +1,13 @@
+[Unit]
+Description=Mawenzy daemon for GPU development
+After=syslog.target dbus.service
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/sysconfig/mawd.conf
+User=mawenzy
+Group=mawenzy
+ExecStart=/usr/bin/mawd $MAWD_ARGS
+
+[Install]
+WantedBy=multi-user.target

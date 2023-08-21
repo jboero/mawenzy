@@ -1,0 +1,36 @@
+#!/usr/bin/mawsh
+// John Boero
+// CLON - OpenCL Object Notation
+// Example of C99 initializers for importing human-readable inputs.
+// NOTE large data sets may take extra compile time.
+#include <mawsh.cl>
+
+// Define our schema via struct (required).
+typedef struct
+{
+	char 	first[32], last[32];
+	short	age;
+	char 	address[64];
+} person;
+
+// In OpenCL 1.2, program-level variables require constant address space.
+// In OpenCL 2.0+ they can be constant or global.
+constant person john = {.first="John", .last="Boero", 25, "john@nope.tech"};
+
+// Define an array inline.
+constant person localPeople[] = {
+{"Jimmy", "Whiplash", 23, "jimmy@nope.tech"},
+{"Cindi", "Johnson", 36, "cindi@nope.tech"},
+{"高橋", "鈴木", 29, "takahashi@nope.tech"}
+};
+
+// Load external definitions from a file.
+// https://raw.githubusercontent.com/lawlesst/vivo-sample-data/master/data/csv/people.csv
+// Note changes to external files won't trigger recompilation.
+#include "/tmp/csv_people.cl"
+
+void kernel totals(global mawproc *p)
+{
+	// How many people have we defined externally?
+	printmi(&p->out, sizeof(external) / sizeof(person));
+}

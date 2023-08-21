@@ -1,0 +1,49 @@
+#!/usr/bin/mawsh
+
+// Need this line for Mawsh support
+#include <mawsh.cl>
+
+typedef struct mstate
+{
+	uint rnd;
+	uint visitors;
+} mstate;
+
+void kernel main_$var(global mawproc* p, global char* file, global mstate* st)
+{
+	// Increment the number of times we've been used.
+	st->visitors++;
+
+	printmc(&p->out, "<html><head><title>Mawenzy: Oh the places you'll go (via GPU)</title></head><body><h2><p>\n");
+	printmg(&p->out, file);
+	printmc(&p->out, "\n<h4>");
+
+	switch (rand(&st->rnd) % 5)
+	{
+		case 0:
+		printmc(&p->out, "\n<img height='240' src='https://weneedfun.com/wp-content/uploads/2016/12/Thailand-Flag-2.gif'><p>Thailand\n<p>ขอแสดงความยินดี!<br>วันนี้เป็นวันของคุณ.<br>คุณไปที่ Great Places!<br>คุณออกไปแล้ว!<br><br>คุณมีสมองอยู่ในหัวของคุณ<br>คุณมีเท้าอยู่ในรองเท้า<br>คุณสามารถควบคุมตัวเองได้<br>ทิศทางที่คุณเลือก<br>คุณอยู่ด้วยตัวคุณเอง และคุณรู้ว่าคุณรู้อะไร<br>และคุณเป็นคนที่จะตัดสินใจว่าจะไปที่ไหน<br><br>คุณจะมองขึ้นและลงถนน มองพวกเขาด้วยความระมัดระวัง<br>เกี่ยวกับบางอย่างที่คุณจะพูดว่า ฉันไม่เลือกที่จะไปที่นั่น<br>ด้วยหัวของคุณเต็มไปด้วยสมองและรองเท้าของคุณเต็มไปด้วยเท้า,<br>คุณฉลาดเกินไปที่จะลงถนนที่ไม่ดี<br><br>และคุณอาจไม่พบ<br>คุณจะต้องลงไป<br>ในกรณีนี้แน่นอนว่า<br>คุณจะมุ่งตรงออกจากเมือง<br><br>มันเปิดที่นั่น<br>ในที่โล่งกว้าง<br><br>มีสิ่งต่างๆเกิดขึ้นได้<br>และมักทำ<br>ให้คนฉลาด<br>และเท้าเป็นคุณ<br><br>แล้วสิ่งที่เริ่มต้นที่จะเกิดขึ้น,<br>ไม่ต้องกังวล อย่าเคี่ยว<br>เพียงแค่ไปทางขวา<br>คุณจะเริ่มเกิดขึ้นด้วย<br><br>OH!<br>สถานที่ที่คุณจะไป!<br>");
+		break;
+
+		case 1:
+		printmc(&p->out, "\n<img height='240' src='http://www.chinese-flag.org/chinese-640.gif'><p>China\n<br>恭喜！<br> 今天是你的好日子。<br> 你离开了好地方！<br> 你离开了！<br> <br> 你脑中有脑子<br> 你有脚在你的鞋子。<br> 你可以引导自己<br> 你选择的任何方向<br> 你是你自己的 你知道你知道什么<br> 你是决定去哪里的人。<br> <br> 你会在街上上下看。 小心翼翼地看着。<br> 关于一些你会说，“我不选择去那里。<br> 你的头充满了大脑，你的脚充满了脚，<br> 你太聪明了，不能走下那条不太好的街道。<br> <br> 你可能找不到任何东西<br> 你会想下去。<br> 在这种情况下，当然，<br> 你会直接走出城外。<br> <br> 在那里开了<br> 在广阔的空气中。<br> <br> 有事情会发生<br> 并经常做<br> 以人为本<br> 和脚跟你一样。<br> <br> 然后事情开始发生，<br> 别担心 不要炖<br> 直接走吧<br> 你也会开始发生。<br> <br> 哦！<br> 你去的地方<br>");
+		break;
+
+		case 2:
+		printmc(&p->out, "\n<img height='240' src='http://www.freeusandworldmaps.com/images/Flags_Images/UnitedKingdom-ukflag.jpg'><p>England\n<br>Congratulations!<br> Today is your day.<br> You're off to Great Places!<br> You're off and away!<br> <br> You have brains in your head.<br> You have feet in your shoes.<br> You can steer yourself <br> any direction you choose.<br> You're on your own. And you know what you know.<br> And YOU are the guy who'll decide where to go.<br> <br> You'll look up and down streets. Look 'em over with care.<br> About some you will say, \"I don't choose to go there.\"<br> With your head full of brains and your shoes full of feet, <br> you're too smart to go down any not-so-good street.<br> <br> And you may not find any<br> you'll want to go down.<br> In that case, of course,<br> you'll head straight out of town.<br> <br> It's opener there<br> in the wide open air.<br> <br> Out there things can happen<br> and frequently do<br> to people as brainy<br> and footsy as you.<br> <br> And then things start to happen,<br> don't worry. Don't stew.<br> Just go right along.<br> You'll start happening too.<br> <br> OH!<br> THE PLACES YOU'LL GO!<br> <br>");
+		break;
+
+		case 3:
+		printmc(&p->out, "\n<img height='240' src='https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Flag_of_the_United_States.svg/300px-Flag_of_the_United_States.svg.png'><p>USA\n<br>Congratulations!<br> Today is your day.<br> You're off to Great Places!<br> You're off and away!<br> <br> You have brains in your head.<br> You have feet in your shoes.<br> You can steer yourself <br> any direction you choose.<br> You're on your own. And you know what you know.<br> And YOU are the guy who'll decide where to go.<br> <br> You'll look up and down streets. Look 'em over with care.<br> About some you will say, \"I don't choose to go there.\"<br> With your head full of brains and your shoes full of feet, <br> you're too smart to go down any not-so-good street.<br> <br> And you may not find any<br> you'll want to go down.<br> In that case, of course,<br> you'll head straight out of town.<br> <br> It's opener there<br> in the wide open air.<br> <br> Out there things can happen<br> and frequently do<br> to people as brainy<br> and footsy as you.<br> <br> And then things start to happen,<br> don't worry. Don't stew.<br> Just go right along.<br> You'll start happening too.<br> <br> OH!<br> THE PLACES YOU'LL GO!<br> <br>");
+		break;
+
+		case 4:
+		printmc(&p->out, "\n<img height='240' src='http://vignette2.wikia.nocookie.net/bigbangtheory/images/6/68/Indian_flag.jpg/revision/latest?cb=20150511220218'><p>India\n<br>बधाई!<br> आज तुम्हारा दिन है।<br> आप महान स्थानों के लिए बंद हो!<br> तुम दूर हो और दूर हो!<br> <br> तुम्हारे सिर में मस्तिष्क है।<br> अपनी मर्यादा में रहो।<br> आप अपने आप को आगे बढ़ा सकते हैं<br> आप जो भी दिशा चुनते हैं<br> आप अपने दम पर कर रहे हैं। और आप जानते हैं जो आप जानते हैं।<br> और आप उस व्यक्ति हैं जो तय करेंगे कि कहां जाए<br> <br> आप नीचे और सड़कों को देखेंगे देखभाल के साथ उन्हें देखो '<br> कुछ लोगों के बारे में आप कहेंगे,मैं वहां नहीं जाना चाहता।<br> आपके दिमाग से भरा सिर और पैर से भरा अपने जूते,<br> आप किसी भी न तो-अच्छी सड़क के नीचे जाने के लिए बहुत चतुर हैं<br> <br> और आपको कोई भी नहीं मिल सकता है<br> आप नीचे जाना चाहते हैं<br> उस मामले में, ज़ाहिर है,<br> आप सीधे शहर से बाहर निकलेंगे<br> <br> यह सलामी बल्लेबाज वहाँ है<br> विस्तृत खुली हवा में<br> <br> वहां से कुछ भी हो सकता है<br> और अक्सर करते हैं<br> बुद्धिमान के रूप में लोगों के लिए<br> और आप के रूप में footsy<br> <br> और फिर चीजें होने लगती हैं,<br> चिंता मत करो। स्टू न करें<br> बस ठीक साथ जाओ<br> आप भी हो रहा शुरू करेंगे।<br> <br> ओह!<br> वे जगहें जो आप जाओगे!<br> <br>");
+		break;
+
+		default:
+		printmc(&p->out, "\n<p>You definitely went somewhere interesting.");
+		break;
+	}
+	printmc(&p->out, "\n</p></h2>This page content is completely generated on the GPU</body></html><!-- \0");
+}
+

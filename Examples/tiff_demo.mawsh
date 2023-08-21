@@ -1,0 +1,29 @@
+#!/usr/bin/mawsh
+// Square TIFF render.  
+// Buffer size must be at least WxHx4 + header size (62)
+// John Boero
+#define TIFFW    1024
+#define TIFFH    1024
+
+#include <mawsh.cl>
+#include <tiff.cl>
+
+// Single task for initialization of TIFF header
+void kernel setup(global tiffFile *tif)
+{
+	initTIFF(tif);
+}
+
+// Render a color gradient into RGBA space.
+void kernel render_1024x1024(global tiffFile *tif)
+{
+	tif->rgba[G1][G0] = (uchar4)(
+		// Red gradient left to right
+		255.0 * G0 / GSIZE0,
+		// Green gradient top to bottom
+		255.0 * G1 / GSIZE1,
+		// Blue distance from center
+		sqrt(pow((float)G0 - (TIFFW / 2), 2) + pow((float)G1 - (TIFFH / 2), 2)) / 4,
+		// Alpha sin wave from G0 * G1
+		64 * sin((float)G0 * G1 / (GSIZE0 * 32)) + 191);
+}

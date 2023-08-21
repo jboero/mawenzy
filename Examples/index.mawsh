@@ -1,0 +1,20 @@
+#!/usr/bin/mawsh
+// John Boero - an ugly example of generating web content on the GPU.
+// No cookies, GET/POST values, etc.
+#include <mawsh.cl>
+
+typedef struct
+{
+    int visitor;
+    int randseed;
+} appstate;
+
+kernel void visitor(global mawproc *p, global appstate *state)
+{
+    printmc(&p->out, 
+"Content-type: text/html\n\n\
+<html><head><title>Welcome to the GPU</title></head>\n\
+<body><center><h1>Welcome</h1><br>\nYou are visitor ");
+    printmi(&p->out, state->visitor++);
+    printmc(&p->out, "\n</body></html>\n");
+}

@@ -1,0 +1,24 @@
+﻿#!/usr/bin/mawsh
+
+void kernel main_000(global struct mawproc *proc, global char *seed)
+{
+	int rnd = rand(seed) % 5;
+	switch (rnd)
+	{
+		case 0:
+			printm(proc, "You got 0 dawg.");
+			break;
+		case 1:
+			printm(proc, "You got 1 dawg.");
+			break;
+		case 2:
+			printm(proc, "You got 2 dawg.");
+			break;
+		case 3:
+			printm(proc, "You got 3 dawg.");
+			break;
+		case 4:
+			printm(proc, "You got 4 dawg.");
+			break;
+	}
+}

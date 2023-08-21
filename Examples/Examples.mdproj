@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ItemType>GenericProject</ItemType>
+    <ProjectGuid>{4B0279D8-5D09-4250-B399-48617144334B}</ProjectGuid>
+    <ReleaseVersion>0.3</ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Default|AnyCPU' ">
+    <OutputPath>.</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="atomics.mawsh" />
+    <None Include="bad.mawsh" />
+    <None Include="bmp_demo.mawsh" />
+    <None Include="brotlidec.mawsh" />
+    <None Include="brotliindex.mawsh" />
+    <None Include="brotlitest.mawsh" />
+    <None Include="clon.mawsh" />
+    <None Include="dictionaryhash.mawsh" />
+    <None Include="good.mawsh" />
+    <None Include="hello1.mawsh" />
+    <None Include="hello2.mawsh" />
+    <None Include="index.mawsh" />
+    <None Include="kvparams.mawsh" />
+    <None Include="madmax.mawsh" />
+    <None Include="match.mawsh" />
+    <None Include="places.mawsh" />
+    <None Include="race.mawsh" />
+    <None Include="saxpy1024.mawsh" />
+    <None Include="saxpy1024x1024.mawsh" />
+    <None Include="sort.mawsh" />
+    <None Include="test_parallel.mawsh" />
+    <None Include="testproc.mawsh" />
+    <None Include="testproc_param.mawsh" />
+    <None Include="vectoradd.mawsh" />
+  </ItemGroup>
+</Project>

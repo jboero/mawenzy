@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{319CDECA-D679-4E8A-8F8A-72EC8FEE4BF0}</ProjectGuid>
+    <Compiler>
+      <Compiler ctype="GppCompiler" />
+    </Compiler>
+    <Language>CPP</Language>
+    <Target>Bin</Target>
+    <Packages>
+      <Packages>
+        <Package file="/usr/lib64/pkgconfig/OpenCL.pc" name="OpenCL" IsProject="False" />
+      </Packages>
+    </Packages>
+    <ReleaseVersion>0.3</ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug</OutputPath>
+    <Externalconsole>true</Externalconsole>
+    <OutputName>mawsh</OutputName>
+    <CompileTarget>Bin</CompileTarget>
+    <DefineSymbols>DEBUG MONODEVELOP</DefineSymbols>
+    <SourceDirectory>.</SourceDirectory>
+    <ExtraCompilerArguments>-std=c++11</ExtraCompilerArguments>
+    <Commandlineparameters>~/code/mawsh/Examples/tiff_demo.mawsh tif=@[4m]test.tiff</Commandlineparameters>
+    <EnvironmentVariables>
+      <EnvironmentVariables>
+        <Variable name="MAWS_SOCK" value="/tmp/mawd.sock" />
+      </EnvironmentVariables>
+    </EnvironmentVariables>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release</OutputPath>
+    <Externalconsole>true</Externalconsole>
+    <OutputName>mawsh</OutputName>
+    <CompileTarget>Bin</CompileTarget>
+    <OptimizationLevel>3</OptimizationLevel>
+    <DefineSymbols>MONODEVELOP</DefineSymbols>
+    <SourceDirectory>.</SourceDirectory>
+    <ExtraCompilerArguments>-std=c++11</ExtraCompilerArguments>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="mawsh.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="StdColors.h" />
+  </ItemGroup>
+</Project>

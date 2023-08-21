@@ -1,0 +1,49 @@
+#!/usr/bin/mawsh
+#include <mawsh.cl>
+
+void kernel init_256(global int *totals)
+{
+    totals[G0] = 0;
+}
+
+//  NOT KERNELS
+void printmcp(global mawstr *str, private char* append)
+{
+	while ((str->buf[str->len++] = *append++));
+	str->buf[str->len--] = '\0';
+}
+
+// KERNELS
+void kernel histogram_30000(global mawproc* p,
+        global char *src, global int *totals)
+{
+	atomic_inc(&totals[src[G0]]);
+}
+
+void kernel dictionary((global mawproc* p)
+{
+
+}
+
+void kernel bubblesort_255(global int *totals)
+{
+    global int *p = totals + G0;
+    for (int i = 0; i < 255; ++i)
+        atomic_max(p, atomic_min(p+1, *p));
+}
+
+void kernel report(global mawproc *p, constant int *totals)
+{
+    char str[4] = "  ";
+	printmc(&p->out, "Totals found: ");
+	for (uchar i = 0; i < 255; ++i)
+	{
+        if (!totals[i])
+            continue;
+        
+        str[1] = i;
+        printmi(&p->out, totals[i]);
+        printmcp(&p->out, str);
+        printmc(&p->out, "\n");
+	}
+}

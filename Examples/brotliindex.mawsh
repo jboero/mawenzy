@@ -1,0 +1,42 @@
+#!/usr/bin/mawsh
+#include <mawsh.cl>
+#include <brotli.cl>
+
+void initIX_$m(global int *ix)
+{
+    ix[G0] = G0;
+}
+
+char cmp(global char *x, global char *y, int len)
+{
+	//while (len > 0 && *x && (*(x++) == *(y++)))
+	//	len--;
+	
+	return *x - *y;
+}
+
+void kernel testcmpare(global char *a, global char *b)
+{
+    char diff = cmp(a, b, 3);
+    printf("diff is %d\n", diff);
+    //printmi(&p->out, diff);
+}
+
+void buildindex_$m(global brotlidict *d, global int *ix, int l, int m)
+{
+    int t = G0 / 2 * 2;
+    global char *w1 = broindex(d, l, t);
+    global char *w2 = broindex(d, l, t + 1);
+    char diff;
+
+    while (m--)
+    {
+        diff = strncmpg(w1, w2, l);
+        if (diff > 0)
+        {
+            int tmp = ix[t];
+            ix[t]   = ix[t+1];
+            ix[t+1] = tmp;
+        }
+    }
+}

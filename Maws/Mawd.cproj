@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{46DDC3BA-9691-4278-99D7-23F97F76C619}</ProjectGuid>
+    <Compiler>
+      <Compiler ctype="GppCompiler" />
+    </Compiler>
+    <Language>CPP</Language>
+    <Target>Bin</Target>
+    <Packages>
+      <Packages>
+        <Package file="/usr/lib64/pkgconfig/OpenCL.pc" name="OpenCL" IsProject="False" />
+        <Package file="/usr/lib64/pkgconfig/fuse.pc" name="fuse" IsProject="False" />
+      </Packages>
+    </Packages>
+    <ReleaseVersion>0.3</ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug</OutputPath>
+    <OutputName>mawd</OutputName>
+    <CompileTarget>Bin</CompileTarget>
+    <DefineSymbols>DEBUG MONODEVELOP</DefineSymbols>
+    <SourceDirectory>.</SourceDirectory>
+    <ExtraCompilerArguments>-g -std=c++11 -D_FILE_OFFSET_BITS=64 </ExtraCompilerArguments>
+    <Commandlineparameters>-f -o big_writes,max_write=262144,max_read=262144 /mnt/gpu</Commandlineparameters>
+    <ExtraLinkerArguments>-lrt -lpthread -lfuse -lOpenCL</ExtraLinkerArguments>
+    <EnvironmentVariables>
+      <EnvironmentVariables>
+        <Variable name="MAWS_PLAT" value="1" />
+        <Variable name="MAWS_DEV" value="0" />
+        <Variable name="MAWS_BASE" value="/mnt/gpu" />
+        <Variable name="MAWS_SOCK" value="/tmp/mawd.sock" />
+        <Variable name="CUDA_CACHE_DISABLE" value="1" />
+      </EnvironmentVariables>
+    </EnvironmentVariables>
+    <ConsolePause>false</ConsolePause>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release</OutputPath>
+    <OutputName>mawd</OutputName>
+    <CompileTarget>Bin</CompileTarget>
+    <DefineSymbols>MONODEVELOP</DefineSymbols>
+    <SourceDirectory>.</SourceDirectory>
+    <Commandlineparameters>-o big_writes,max_write=262144,max_read=131072 /mnt/gpu</Commandlineparameters>
+    <ExtraCompilerArguments>-std=c++11 -D_FILE_OFFSET_BITS=64 </ExtraCompilerArguments>
+    <Externalconsole>true</Externalconsole>
+    <OptimizationLevel>3</OptimizationLevel>
+    <EnvironmentVariables>
+      <EnvironmentVariables>
+        <Variable name="MAWS_PLAT" value="0" />
+        <Variable name="MAWS_DEV" value="0" />
+        <Variable name="MAWS_COMMON" value="/home/jboero/Desktop/mawsh/Maws/bin/Debug/common_src.cl" />
+      </EnvironmentVariables>
+    </EnvironmentVariables>
+    <ConsolePause>false</ConsolePause>
+    <ExtraLinkerArguments>-lrt -lpthread -lfuse -lOpenCL</ExtraLinkerArguments>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="MawNodes\MawNode.cpp" />
+    <Compile Include="MawNodes\GPUNode.cpp" />
+    <Compile Include="MawNodes\DirNode.cpp" />
+    <Compile Include="MainMawd.cpp" />
+    <Compile Include="MawNodes\SysNode.cpp" />
+    <Compile Include="MawNodes\ProcNode.cpp" />
+    <Compile Include="Sockets.cpp" />
+    <Compile Include="MawNodes\LinkNode.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="StdColors.h" />
+    <None Include="MawNodes\MawNode.h" />
+    <None Include="MawNodes\DirNode.h" />
+    <None Include="MawNodes\GPUNode.h" />
+    <None Include="MawNodes\ProcNode.h" />
+    <None Include="Mawd.h" />
+    <None Include="MawNodes\SysNode.h" />
+    <None Include="Sockets.h">
+      <DependentUpon>Sockets.cpp</DependentUpon>
+    </None>
+    <None Include="Config\mawd.service">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\mawd.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\run.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Config\mawd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MawNodes\LinkNode.h" />
+    <None Include="MawshCL\mawsh.cl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MawshCL\bmp.cl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="MawshCL\html.cl" />
+    <None Include="Config\mawenzy.spec" />
+    <None Include="Config\mawenzy-nomad.hcl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MawNodes\" />
+    <Folder Include="Config\" />
+    <Folder Include="MawshCL\" />
+  </ItemGroup>
+</Project>

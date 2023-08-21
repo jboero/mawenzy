@@ -1,0 +1,12 @@
+#!/usr/bin/mawsh
+#include <mawsh.cl>
+
+void kernel testsize(global mawproc *p, global char *buff, int buff_size)
+{
+    printmc(&p->out, "Buffer is: ");
+    printmg(&p->out, buff);
+    
+    printmc(&p->out, "Size is: ");
+    printmi(&p->out, buff_size);
+    printmc(&p->out, "\n");
+}

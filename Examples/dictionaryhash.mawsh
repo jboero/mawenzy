@@ -1,0 +1,119 @@
+#!/usr/bin/mawsh
+#include <mawsh.cl>
+#include <brotli.cl>
+
+// Use inefficient parallel array to analyze
+// Indexed by hash
+typedef struct
+{
+    // Sparse struct. Lots of waste here.
+    int counts[0x10000];    // 128k
+    int lengths[0x10000];   // 128k
+} ixbuilder;
+
+ushort hash(uint v)
+{
+    return v % 64321;
+}
+
+// Analyze lengths 4-23 in parallel.
+kernel void analyze_20(
+	global brotlidict *d, global ixbuilder *ixb)
+{
+    // All words in our length (G0).
+    for (int i = 0; i < brotli_blocks[G0]; ++i)
+    {
+        global char *w;
+
+        // Get our word
+        if (!(w = broindex(d, 4 + G0, i)))
+            continue;
+
+        // Trial and error: ideal hash.
+        ushort h = hash(*(global uint*)w);
+        
+        // Other lengths require atomic
+        atomic_inc(&ixb->counts[h]);
+        atomic_add(&ixb->lengths[h], G0 + 5);
+    }
+}
+
+//kernel 
+void getn(global mawproc *p, global ixbuilder *ixb)
+{
+    int n = 0;
+    int maxcount = 0;
+	for (int i = 0; i < 0x10000; ++i)
+    {
+		if (ixb->lengths[i])
+        {
+            maxcount = max(maxcount, ixb->counts[i]);
+			++n;
+        }
+    }
+    
+    printf("number of rows = %d\n", n);
+    printf("max collisions = %d\n", maxcount);
+}
+
+//kernel 
+void printsample(global ixbuilder *ixb)
+{
+    for (int i = 0; i < 0xFFF; ++i)
+        if (ixb->counts[i])
+            printf("%d:\t%d\n", i, ixb->counts[i]);
+}
+
+// Use analysis to build compact index for use.
+constant const int nrows = 8570;
+typedef struct
+{
+    uint   offsets[0x10000];  // 512kb?
+    char   *dict;           //???
+} ix;
+
+void memcpy(global char *src, char *dst, int len)
+{
+    while (*src && len--)
+        *dst++ = *src++;
+}
+
+void kernel buildblocks(global ixbuilder *ixb, global ix *ix)
+{
+    int accum = 0, curix = 0;
+
+    for (int len = 0; len < 20; ++len)
+    {
+        for (int i = 0; i < brotli_blocks[G0]; ++i)
+        {
+            if (ixb->lengths[curix])
+            {
+                ix->offsets[curix] = accum;
+                accum += ixb->lengths[curix];
+            }
+            curix++;
+        }
+    }
+}
+
+void kernel buildix(global brotlidict *d, global ixbuilder *ixb, global ix *ix)
+{
+    uint offset = 0;
+
+    // All words in our length (G0).
+    for (int len = 0; len < 20; ++len)
+    {
+        for (int i = 0; i < brotli_blocks[G0]; ++i)
+        {
+            global char *w = broindex(d, 4 + len, i);
+            ushort h = hash(*(global uint*)w);
+            offset = ix->offsets[h];
+
+            // Search for double 0x00 to start next
+            while ((ushort*)(ix->dict + offset))
+                ++offset;
+            
+            //memcpy(w, &(ix->dict[offset]), len);
+        }
+    }
+}

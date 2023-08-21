@@ -1,0 +1,23 @@
+﻿<Properties StartupConfiguration="{7EDCB00A-002A-437B-938B-BFBB232F4F66}|Default" GitUserInfo="UsingGIT" StartupItem="Maws/Mawd.cproj">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Maws/Sockets.cpp">
+    <Files>
+      <File FileName="Maws/Sockets.cpp" Line="91" Column="27" />
+      <File FileName="../../../../usr/include/c++/10/ext/string_conversions.h" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/home/jboero/code/mawsh/Maws/MawNodes/DirNode.cpp" line="146" column="1" />
+      <Breakpoint file="/home/jboero/code/mawsh/Mawsh/mawsh.cpp" line="204" column="1" />
+      <Breakpoint file="/home/jboero/code/mawsh/Mawsh/mawsh.cpp" line="180" column="17" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="gunzip/gunzip.c" line="389" offsetX="608" offsetY="9700" expression="code_lengths_node-&gt;code" liveUpdate="False" />
+    <Watch file="gunzip/gunzip.c" line="401" offsetX="932" offsetY="10000" expression="repeat_length" liveUpdate="False" />
+    <Watch file="Maws/MainMawgs.cpp" line="64" offsetX="500" offsetY="1575" expression="path" liveUpdate="False" />
+    <Watch file="Maws/MainMawgs.cpp" line="546" offsetX="548" offsetY="13625" expression="cval" liveUpdate="False" />
+    <Watch file="Maws/LSockets.cpp" line="155" offsetX="188" offsetY="1848" expression="arg" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
+</Properties>

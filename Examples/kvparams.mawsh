@@ -1,0 +1,47 @@
+#!/usr/bin/mawsh
+
+// Need this line for Mawsh support
+#include <mawsh.cl>
+
+typedef struct mstate
+{
+	int	rnd;
+	int	visitors;
+	int	odds;
+	char	buff[256];
+} mstate;
+
+void kernel main1(global mawproc* p, global mstate* st)
+{
+	// Increment the number of times we've been used.
+	st->visitors++;
+
+	printmc(&p->out, "\n</p></h2>This page content is completely generated on the GPU</h2><p>\n");
+}
+
+void kernel main2(global mawproc* p, global mstate* st)
+{
+	printmc(&p->out, "You are visitor ");
+	printmi(&p->out, st->visitors);
+	printmc(&p->out, "</body></html>");
+}
+
+void kernel main3_1024x1024(global mawproc* p, global mstate *st)
+{
+	int	x = get_global_id(0),
+		y = get_global_id(1),
+		z = get_global_id(2);
+
+	if (x % 2 && y % 2 && z % 2)
+		st->odds++;
+//		atomic_inc(&st->odds);
+
+	st->buff[x % 256] ^= x ^ y ^ z;
+}
+
+void kernel main4(global mawproc* p, constant mstate *st)
+{
+	printmc(&p->out, "Contents of odds: ");
+	//printmi(&p->out, st->odds);
+	//printmc(&p->out, "\n");
+}

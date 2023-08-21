@@ -1,0 +1,7 @@
+#!/usr/bin/mawsh
+#include <mawsh.cl>
+
+void kernel hello(global mawproc* p)
+{
+	printf("Hello, world!\n");
+}

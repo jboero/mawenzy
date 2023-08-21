@@ -1,0 +1,9 @@
+#!/usr/bin/mawsh
+#include <mawsh.cl>
+
+void kernel vectoradd_1024(global mawproc* p,
+        constant int *a, constant int *b, global int *c)
+{
+	int i = get_global_id(1);
+	c[i] = a[i] + b[i];
+}

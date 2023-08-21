@@ -1,0 +1,18 @@
+#!/usr/bin/mawsh
+// John Boero
+#define BMPW    1024
+#define BMPH    768
+
+#include <mawsh.cl>
+#include <bmp.cl>
+
+void kernel setup(global bmpFile *bmp)
+{
+	initBMP(bmp);
+    printf("sizes: %d - %d\n", sizeof(bmpFile), bmp->header.size);
+}
+
+void kernel render_1024x768(global bmpFile *bmp)
+{
+    bmp->argb[G0][G1] = (uchar4)(0xFF, 0x80, 0x80, 0x80);
+}

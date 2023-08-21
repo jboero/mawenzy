@@ -1,0 +1,33 @@
+#!/usr/bin/mawsh
+#include <mawsh.cl>
+#include <brotli.cl>
+
+// Indexed lookup of length and whatnot.
+void kernel index(global mawproc *p, global brotlidict *d, int len, int ix)
+{
+	global char *r;
+	switch (len)
+	{
+		case 4: r = d->l4[ix]; break;
+		case 5: r = d->l5[ix]; break;
+		case 6: r = d->l6[ix]; break;
+		case 7: r = d->l7[ix]; break;
+		case 8: r = d->l8[ix]; break;
+		case 9: r = d->l9[ix]; break;
+		case 10: r = d->l10[ix]; break;
+		case 11: r = d->l11[ix]; break;
+		case 12: r = d->l12[ix]; break;
+		case 13: r = d->l13[ix]; break;
+		case 14: r = d->l14[ix]; break;
+		case 15: r = d->l15[ix]; break;
+		case 16: r = d->l16[ix]; break;
+		case 17: r = d->l17[ix]; break;
+		case 18: r = d->l18[ix]; break;
+		case 19: r = d->l19[ix]; break;
+		case 20: r = d->l20[ix]; break;
+		case 21: r = d->l21[ix]; break;
+		case 22: r = d->l22[ix]; break;
+		case 23: r = d->l23[ix]; break;
+	}
+	printmgn(&p->out, r, len);
+}

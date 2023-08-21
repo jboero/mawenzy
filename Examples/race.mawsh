@@ -1,0 +1,12 @@
+#!/usr/bin/mawsh
+
+void kernel main_000_8_8(global mawproc* p, global uchar *bits)
+{
+	int g0	= get_global_id(0);
+	int g1	= get_global_id(1);
+	int l0	= get_local_id(0);
+	int l1	= get_local_id(1);
+
+//	printf("%d\t%d\t%d\t%d\n", g0, g1, l0, l1);
+	bits[l0] ^= (1 << l1);
+}

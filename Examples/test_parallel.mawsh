@@ -1,0 +1,27 @@
+#!/usr/bin/mawsh
+
+typedef struct mstate
+{
+	int slen1;
+	char str1[16384];
+	float vec[3];
+	uchar flags;
+	bool torf;
+	int count;
+} mstate;
+
+void kernel main_001(global struct mawproc* proc, global char* file, global struct mstate* st)
+{
+	printmc(proc, "<html><head><title>Hello directly from the GPU</title></head><body><h2><p>");
+	printmg(proc, file);
+	printmc(proc, "</p></h2>This page content comes directly from the GPU</body></html>");
+}
+
+void kernel main_002_10_1(global struct mawproc* proc)
+{
+	int lid = get_local_id(0);
+	int gid = get_global_id(0);
+
+	printmc(proc, "hello 10x10\n");
+}
+

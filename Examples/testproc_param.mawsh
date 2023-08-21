@@ -1,0 +1,8 @@
+﻿#!/usr/bin/mawsh
+
+void kernel main_000(global struct mawproc* proc, constant char* file)
+{
+    printm(proc, "<html><head><title>Hello directly from the GPU</title></head><body><h2><p>");
+    printm(proc, file);
+    printm(proc, "</p></h2>This page content comes directly from the GPU</body></html>");
+}

@@ -1,0 +1,8 @@
+#!/usr/bin/mawsh
+#include <mawsh.cl>
+
+// SAXPY basic 1024. 4k buffers required
+void kernel saxpy_1024(float a, constant float *x, global float *y)
+{
+	y[G0] = a*x[G0] + y[G0];
+}

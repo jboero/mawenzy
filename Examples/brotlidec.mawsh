@@ -1,0 +1,355 @@
+#!/usr/bin/mawsh
+
+/******************************** Structure */
+
+typedef struct
+{
+        constant char *buf, *pos;
+        int bpos;
+} bitstream;
+
+typedef struct {
+  uchar  bits;
+  ushort value;
+} HuffmanCode;
+
+typedef struct
+{
+        uchar RLE, PFX, SIZE;
+        HuffmanCode[128];
+}cmapl;
+
+typedef struct
+{
+}cmapd;
+
+typedef struct
+{
+        bool    ISLAST, ISLASTEMPTY;
+        short   MNIBBLES, MSKIPBYTES, MSKIPLEN;
+        int     MLEN;
+        bool    ISUNCOMPRESSED;
+        short   NBLTYPESL, NBLTYPESI, NBLTYPESD, NPOSTFIX;
+        short   NDIRECT, CONTEXTMODEL, NTREESL, NTREESD;
+        enum
+        {
+                MSB6 = 0,
+                LSB6 = 1,
+                UTF8 = 2,
+                Signed = 3,
+        } CMODE;
+
+        short   LT;
+        cmapl CMAPL[4];
+        cmapd CMAPD[4];
+} metablock;
+
+
+/*********************************** Process */
+
+void initbitstream(bitstream *bs, constant char *compressedbuf)
+{
+        bs->buf = bs->pos = compressedbuf;
+        bs->bpos = 0;
+}
+
+// Peekabit - prereq bs is valid
+char peekbit(bitstream *bs)
+{
+        return (*(bs->pos) & (char)(1 << bs->bpos)) ? 1 : 0;
+}
+
+void skipbits(bitstream *bs, int bits)
+{
+        int bmod = bits % 8;
+        bs->pos += bits / 8;
+        bs->bpos += bmod;
+
+        if (bs->bpos > 7)
+        {
+                bs->pos++;
+                bs->bpos -= 8; 
+        }
+}
+
+void printstream(global mawstr4k *buf, bitstream *stream)
+{
+        if (buf)
+        {
+                printmi(buf, stream->pos - stream->buf);
+                printmc(buf, ".");
+                printmi(buf, stream->bpos);
+                printmc(buf, "(");
+                printmi(buf, *stream->pos);
+                printmc(buf, ")\n");
+        }
+        printf("%d.%d (0x%x)\n", stream->pos - stream->buf, stream->bpos, (uchar)*stream->pos);
+}
+
+void nextbyte(bitstream *bs)
+{
+        bs->bpos = 0;
+        bs->pos++;
+}
+
+char readbit(bitstream *bs)
+{
+        char res = peekbit(bs);
+        if (++bs->bpos > 7)
+                nextbyte(bs);
+//      printf("readbit %d (%d, %d) = %d\n", *bs->pos, bs->pos - bs->buf, bs->bpos, res);
+        if (bs->bpos)
+                printf("\x1B[32m%d\x1B[0m", res);
+        else
+                printf("\x1B[33m%d\x1B[0m", res);
+        return res;
+}
+
+long readbits(bitstream *bs, uchar n)
+{
+        printf("readbits(0x%X.%X, %d): ", bs->pos - bs->buf, bs->bpos, n);
+        long res = 0;
+        while (n--)
+                res = ((res << 1) | readbit(bs));
+        printf("0x%x\n", res);
+        return res;
+}
+
+long readbitsrev(bitstream *bs, uchar n)
+{
+        printf("readbitsrev(0x%X.%X, %d): ", bs->pos - bs->buf, bs->bpos, n);
+        long res = 0;
+        for (int i = 0; i < n; ++i)
+                res |= readbit(bs) << i;
+        printf("0x%x\n", res);
+        return res;
+}
+
+int readwsize(bitstream *bs)
+{
+        int n = 0;
+
+        if (!readbit(bs))
+                return 16;
+        if ((n = readbits(bs, 3)))
+                return 17 + n;
+        if ((n = readbits(bs, 3)))
+                return 8 + n;
+
+        return 17;
+}
+
+uchar readnibble(bitstream *bs)
+{
+        uchar res = 0;
+        for (char pos = 0; pos < 4; ++pos)
+                res |= readbit(bs) << pos;
+
+        return res;
+}
+
+uchar readvar8(bitstream *bs)
+{
+        printf("readvar8(%X.%X)\n", bs->pos - bs->buf, bs->bpos);
+
+        uchar res = readbit(bs);
+
+        if (!res)
+                return 1;
+
+        res |= readbits(bs, 3) << 1;
+        if (res == 1)
+                return 2;
+
+        return res + readbits(bs, res / 2);
+}
+
+int readPFX(bitstream *bs)
+{
+	char type = readbits(bs, 2);
+
+	// 1 = Simple (2 bits)
+	if (type == 1)
+		return readbits(bs, 2) + 1;
+
+	// TODO complex types
+	return 0;
+}
+
+uchar readRLE(bitstream *bs)
+{
+        uchar res = 0;
+        if (readbit(bs))
+                res = readbits(bs, 4) + 1;
+        return res;
+}
+
+int readCMAP(bitstream *bs, CMAP *cmap)
+{
+	char pfxtypes[4];
+	bool shape = false;
+
+	if (cm->RLE = readRLE(str))
+	{
+		cmap->PFX = readPFX(bs);
+
+		for (int i = 0; i < cmap->PFX; ++i)
+			pfxtypes[i] = readbits(bs, 3)
+
+		if (cmap->PFX == 4)
+			shape = (bool)readbit(bs);
+		
+		if (shape) // True: lngths = 1,2,3,3
+
+		for (int i = 0; i < cmap->SIZE; ++i)
+			cmap->codes[i].value = readbits(bs, alphabet_bits);
+		}
+	}
+	else
+	{
+		// TODO  read 64 bits?
+	}
+}
+
+int readmb(bitstream *str, metablock *mb)
+{
+        if ((mb->ISLAST = readbit(str)))
+                if ((mb->ISLASTEMPTY = readbit(str)))
+                        return 0;
+
+        // Mystery/reserved bit undocumented?
+        //readbit(str);
+
+        // Read MNIBBLES
+        mb->MNIBBLES = readbits(str, 2) + 4;
+
+        if (mb->MNIBBLES == 7)
+                mb->MNIBBLES = 0;
+
+        // Is MNIBBLES 0?
+        if (!mb->MNIBBLES)
+        {
+                // Check reserve bit.  Should be 0.
+                if (readbit(str))
+                        return -1;
+
+                mb->MSKIPBYTES  = readbits(str, 2);
+                mb->MSKIPLEN    = 8 * mb->MSKIPBYTES;
+
+                // Skip TODO test
+                nextbyte(str);
+                readbits(str, mb->MSKIPLEN);
+                return 0;
+        }
+
+        mb->MLEN = 0;
+        printf("MNIBBLES=%d\n", mb->MNIBBLES);
+        for (short nib = 0; nib < mb->MNIBBLES; ++nib)
+                mb->MLEN |= readnibble(str) << (4 * nib);
+        printf("MLEN=%d\n", mb->MLEN);
+
+        if (!mb->ISLAST)
+                mb->ISUNCOMPRESSED = readbit(str);
+
+        // Read variable length NBLTYPESi
+        mb->NBLTYPESL = readvar8(str);
+        mb->NBLTYPESI = readvar8(str);
+        mb->NBLTYPESD = readvar8(str);
+
+        mb->NPOSTFIX = readbits(str, 2);
+        mb->NDIRECT = readbits(str, 4) << mb->NPOSTFIX;
+
+        // Skipping literal block context modes for now
+        for (int i = 0; i < mb->NBLTYPESL; ++i)
+			mb->CMODE = readbitsrev(str, 2);
+
+        mb->NTREESL = readvar8(str);
+		if (mb->NTREESL >= 2)
+			for (int i = 0; i < mb->NBLTYPESL; ++i)
+				readCMAP(src, &mb->CMAPL[i]);
+
+        mb->NTREESD = readvar8(str);
+        if (mb->NTREESD >= 2)
+        {
+                ulong CMAPD;
+                for (int i = 0; i < mb->NBLTYPESD; ++i)
+//                      CMAPD = readbits(str, 4)
+                        skipbits(str, 4*8);
+        }
+
+        return 0;
+}
+
+typedef struct
+{
+        long        WSIZE;
+        metablock        blocks[2];
+        bitstream        reader;
+} brotlistream;
+
+void readbrotli(brotlistream *bs, constant char *rawbuf)
+{
+        initbitstream(&bs->reader, rawbuf);
+
+        bs->WSIZE = readwsize(&bs->reader);
+        bs->WSIZE = (1 << bs->WSIZE) - 16;
+
+        int i = 0;
+        do
+        {
+                readmb(&bs->reader, &bs->blocks[i++]);
+        } while (!bs->blocks[i].ISLAST && i < 1);
+}
+
+void printval(global mawstr4k *buf, constant char* message, int val)
+{
+        printmc(buf, message);
+        printmi(buf, val);
+        printmc(buf, "\n");
+}
+
+void printbool(global mawstr4k *buf, constant char* message, bool val)
+{
+        printmc(buf, message);
+        printmb(buf, val);
+        printmc(buf, "\n");
+}
+
+void kernel main_decompress(global struct mawproc *p, constant char *in, global char *result)
+{
+        brotlistream bs;
+        int err;
+
+        readbrotli(&bs, in);
+
+        printmc(&p->out, "Brotli digestion:\n");
+        printmc(&p->out, "WSIZE = ");
+        printmi(&p->out, bs.WSIZE);
+        printmc(&p->out, "\n");
+
+        for (int i = 0; i < 2; ++i)
+        {
+                metablock *block = &bs.blocks[i];
+                printval(&p->out, "Block ", i);
+                printval(&p->out, "     MNIBBLES = ", block->MNIBBLES);
+                printval(&p->out, "     MSKIPBYTES = ", block->MSKIPBYTES);
+                printval(&p->out, "     MSKIPLEN = ", block->MSKIPLEN);
+                printval(&p->out, "     ISLASTEMPTY = ", block->ISLASTEMPTY);
+                printval(&p->out, "     ISUNCOMPRESSED = ", block->ISUNCOMPRESSED);
+                printbool(&p->out, "    ISLAST = ", block->ISLAST);
+                printval(&p->out, "     NBLTYPESL (Literal) = ", block->NBLTYPESL);
+                printval(&p->out, "     NBLTYPESI (Insert/Copy) = ", block->NBLTYPESI);
+                printval(&p->out, "     NBLTYPESD (Distance) = ", block->NBLTYPESD);
+                printval(&p->out, "     NPOSTFIX = ", block->NPOSTFIX);
+                printval(&p->out, "     NDIRECT = ", block->NDIRECT);
+                printval(&p->out, "     CMODE = ", block->CMODE);
+                printval(&p->out, "     NTREESL = ", block->NTREESL);
+                printval(&p->out, "     NTREESD = ", block->NTREESD);
+
+                printval(&p->out, "     LT = ", block->LT);
+
+
+                if (block->ISLAST)
+                        break;
+        }
+}

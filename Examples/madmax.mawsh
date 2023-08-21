@@ -1,0 +1,22 @@
+#!/usr/bin/mawsh
+#include <mawsh.cl>
+
+// Clear the first two uints to store results.
+void kernel setup(global uint *data)
+{
+	data[0] = data[1] = 0;
+}
+
+// Ugly ugly task serial maximum one at a time
+void kernel madmax(global uint *data, const int s)
+{
+	for (int i = 0; i < s; ++i)
+		data[0] = max(data[0], data[i]);
+}
+
+// Slightly less ugly atomic_max, with a wavefront of 64k
+// Max Power - he's the man with the name you'd love to trust...
+void kernel atomicmax_$s(global uint *data)
+{
+	atomic_max(&data[1], data[G0]);
+}
